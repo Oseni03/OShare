@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+{% load django_htmx %}
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    
+    <title>
+      {% block title %}OShare{% endblock %}
+    </title>
+    
+  </head>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <!-- As a heading -->
+    <div id="home">
+      {% include "nav.html" %}    
+      <div class="container">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+    
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'htmx/htmx.min.js' %}"></script>
+    <script src="{% static 'hyperscript.js' %}"></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script  src="{% static "script.js" %}"></script>
+    
+    <script>
+      document.querySelector("#file-upload").addEventListener("change", (e) => { 
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          const files = e.target.files;
+          const output = document.querySelector("#result");
+          output.innerHTML = "";
+          for (let i = 0; i < files.length; i++) {
+             if (!files[i].type.match("image")) continue;
+              const picReader = new FileReader();
+              picReader.addEventListener("load", function (event) {
+                const picFile = event.target;
+                const div = document.createElement("div");
+                div.innerHTML = `<img class="thumbnail" src="${picFile.result}" title="${picFile.name}"/>`;
+                output.appendChild(div);
+              });
+              picReader.readAsDataURL(files[i]);
+             }
+        } else {
+          alert("Your browser does not support File API");
+        }
+      });
+    </script>
+  </body>
+</html>

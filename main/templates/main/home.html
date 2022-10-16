@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+<br />
+<br />
+<h2>File Upload & Image Preview</h2>
+<p class="lead">No Plugins <b>Just Javascript</b></p>
+
+<!-- Upload  -->
+<form 
+  id="file-upload-form" 
+  class="uploader"
+  hx-encoding='multipart/form-data' 
+  hx-post='{% url 'home' %}' 
+  _='on htmx:xhr:progress(loaded, total) set #progress.value to (loaded/total)*100'>
+  <input id="file-upload" type="file" name="fileUpload" accept="image/*" / multiple="true">
+
+  <label for="file-upload" id="file-drag">
+    <output id="result">
+    {# <img id="file-image" src="#" alt="Preview" class="hidden"> #}
+    <div id="start">
+      <i class="fa fa-download" aria-hidden="true"></i>
+      <div>Select a file or drag here</div>
+      <div id="notimage" class="hidden">Please select an image</div>
+      <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+    </div>
+    <div id="response" class="hidden">
+      <div id="messages"></div>
+      <progress class="progress" id="progress" value="0" max='100'>
+        <span>0</span>%
+      </progress>
+    </div>
+  </label>
+  <input class="btn btn-outline-primary btn-lg" type="submit" name="submit" id="submit" value="Upload" />
+</form>
+
+
+{% endblock %}
